@@ -10,21 +10,20 @@ or [this paper](https://epub.ub.uni-muenchen.de/41183/1/TR.pdf).
 
 This repo contains a little demo of the practical use of OF. 
 It doesn't focues on hyperparameter tuning, 
-but performance evaluation, comparison and interpretation of feature effects through visualization with partial dependence plots (PDP). 
-For this purpose, I trained two different ordinal forests to predict sensory quality of Portuguese *Vinho Verde* using the 
+but performance evaluation, model comparison and interpretation of feature effects through visualization with partial dependence plots (PDP). 
+For this purpose, two different ordinal forests are trained to predict sensory quality of Portuguese *Vinho Verde* using the 
 [Wine Quality Data Set](https://archive.ics.uci.edu/ml/datasets/wine+quality). 
 
 ### Overview
 
-- **models/preprocess_train.R**: R script used for data preprocessing and training. Saves traindata and testdata in the _models/preprocessed_data/_ folder, and 
-OF models *forest1* and *forest2* in _models/_. estimated run time: 1 - 2 minutes
+- **data/preprocess_train.R**: R script used for data preprocessing. Saves traindata and testdata in the _data/preprocessed_data/_ folder.
 
-- **models/preprocessed_data/OF_traindata.dat**: preprocessed, resampled version of the "red wine" subset of the 
+- **data/preprocessed_data/OF_traindata.dat**: preprocessed, resampled version of the "red wine" subset of the 
 Wine Quality Data Set
 
-- **models/preprocessed_data/OF_testdata**: stratified sample of preprocessed, resampled data
+- **data/preprocessed_data/OF_testdata**: stratified sample of preprocessed, resampled data
 
-- **Demo.Rmd**: Rmarkdown file demonstrating how performance of OF models can be measured, compared and interpreted, and feature effects can be visualized with PDPs.
+- **Demo.Rmd**: Rmarkdown file demonstrating how performance of OF models can be measured and compared, and feature effects can be visualized with PDPs.
 
 - **Demo.pdf**: rendered from Demo.Rmd
 
@@ -33,7 +32,7 @@ Wine Quality Data Set
 
 [*ordinalForest* package manual](https://cran.r-project.org/web/packages/ordinalForest/ordinalForest.pdf)
 
-[Explanation/definition of ranked probability skill score](https://www.cawcr.gov.au/projects/verification/verif_web_page.html#RPSS)
+[Explanation/definition of ranked probability score and ranked probability skill score](https://www.cawcr.gov.au/projects/verification/verif_web_page.html#RPS)
 
 [This R script](https://gist.github.com/bgreenwell/1b8afb3c689354695a4890c03124c04a/) demonstrates the use of the *pdp* package with classification problems. 
 
