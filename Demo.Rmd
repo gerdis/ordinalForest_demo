@@ -36,25 +36,29 @@ Each sample is described in terms of 11 physicochemical parameters. Quality is g
 
 The dataset is imbalanced with classes 0, 1, 2, 9 and 10 completely absent, and only a few instances of classes 3 and 8. 
 
-I used the SMOTE method to create a balanced distribution of classes 3 - 8. For the steps taken during preprocessing see *models/preprocess_train.R*
+I used the SMOTE method to create a balanced distribution of classes 3 - 8. For the steps taken during preprocessing see *data/preprocess.R*
 
 ```{r}
 cC <- c("character", rep("numeric", 11), "factor")
-traindata <- read.table(here("models/preprocessed_data/OF_traindata.dat"),
+traindata <- read.table(here("data/preprocessed_data/OF_traindata.dat"),
              colClasses = cC)
-testdata <- read.table(here("models/preprocessed_data/OF_testdata.dat"),
+testdata <- read.table(here("data/preprocessed_data/OF_testdata.dat"),
             colClasses = cC)
 str(traindata)
 ```
 
 ## Models
 
-Using the dataset described above, I trained two simple ordinal forest models which predict sensory quality of wine samples from their physicochemical parameters. For the first model, *forest1*, I used the default settings for class probability prediction. For the second model, I forced the algorithm to consider the variable $residual.sugar$ at every split in additon to the $mtry$ candidate parameters for splitting (for code see *models/preprocess_train.R*).
+Using the dataset described above, I train two simple ordinal forest models which predict sensory quality of wine samples from their physicochemical parameters. For the first model, *forest1*, I use the default settings for class probability prediction. For the second model, I force the algorithm to consider the variable $residual.sugar$ at every split in additon to the $mtry$ candidate parameters for splitting.
 
 ```{r}
-load(here("models/forest1.rda"))
-load(here("models/forest2.rda"))
+set.seed(123)
+forest1 <- ordfor(depvar="quality", data=traindata, perffunction="probability")
+
+forest2 <- ordfor(depvar="quality", data=traindata, perffunction="probability",
+                  always.split.variables = c("residual.sugar"))
 ```
+
 
 ## Tasks
 
@@ -95,7 +99,7 @@ with smaller values signifying better performance. It is [defined](https://www.c
 
 \[RPS=\frac{1}{M-1}\sum_{m=1}^M\left[\left(\sum_{k=1}^mp_k\right)-\left(\sum_{k=1}^mo_k\right)\right]^2,\]
 
-where $M$ is the number of classes, $p_k$ is the predicted probability of class $k$, and $o_k$ is an indicator (0=no, 1=yes) for the observation in class $k$.
+where $M$ is the number of classes, $p_k$ is the predicted probability of class $k$, and $o_k$ is an indicator for the observation in class $k$ (0=no, 1=yes).
 
 Consider the following example, where the RPS is calculated for a single observation and class probability predictions 
 *pred1\$classprobs, pred2\$classprobs, and pred3$classprobs* made by 3 different models. Note that the observation was one-hot encoded merely for illustrative purposes; the obs argument of rps() expects a simple vector of factor levels.
@@ -152,7 +156,7 @@ row.names(overview) <- c("forest1", "forest2")
 print(overview)
 ```
 
-*forest1* has a slightly smaller RPS and a slightly larger RPSS than *forest2*, i.e., a larger relative improvement over the baseline when compared to *forest2*. We can infer that the model using only $mtry$ randomly selected candidates at a given split performs slightly better.   
+*forest1* has a slightly smaller RPS and a larger RPSS than *forest2*, i.e., a larger relative improvement over the baseline when compared to *forest2*. We can infer that the model using only $mtry$ randomly selected candidates at a given split performs slightly better.   
 
 ## Variable Importances
 
